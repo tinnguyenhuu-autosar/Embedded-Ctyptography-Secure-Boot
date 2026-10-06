@@ -1,0 +1,77 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Renode: cleanup",
+            "type": "shell",
+            "command": "pkill -9 -i renode || true; pkill -9 -i mono || true; lsof -ti:3333 | xargs kill -9 2>/dev/null || true; sleep 1; echo '✅ Environment cleaned'",
+            
+            "presentation": { "reveal": "silent", "panel": "shared" }
+        },
+        {
+            "label": "Start Renode (SHA256)",
+            "type": "process",
+            "command": "renode",
+            "args": [
+                "--disable-xwt",
+                "-e",
+                "include @scripts/test_sha256.resc"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": [
+                    {
+                        "regexp": ".",
+                        "file": 1,
+                        "location": 2,
+                        "message": 3
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*System bus created.*$",
+                    "endsPattern": "^.*port :3333.*$"
+                }
+            }
+        },
+        {
+            "label": "Renode: Prepare & Run",
+            "dependsOn": ["Renode: cleanup", "Build", "Start Renode (SHA256)"],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make clean"
+        },
+        {
+            "label": "Run Demo",
+            "type": "shell",
+            "command": "make run",
+            "dependsOn": "Build"
+        },
+        {
+            "label": "Build Examples",
+            "type": "shell",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceFolder}/example"
+            }
+        },
+        {
+            "label": "Run All Tests",
+            "type": "shell",
+            "command": "bash test/run_all_tests.sh"
+        }
+    ]
+}

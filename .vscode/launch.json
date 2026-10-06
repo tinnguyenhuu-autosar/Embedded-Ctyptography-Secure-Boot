@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug SHA256 (Renode)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "external",
+            "gdbPath": "arm-none-eabi-gdb",
+            "gdbTarget": "127.0.0.1:3333",
+            "executable": "${workspaceFolder}/build/app/sha256_test_ecu.elf",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Renode: Prepare & Run",
+            "runToEntryPoint": "main"
+        }
+    ]
+}

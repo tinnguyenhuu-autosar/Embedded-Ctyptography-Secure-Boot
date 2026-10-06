@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "CryptoStack",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:\\Program Files (x86)\\Arm\\GNU Toolchain mingw-w64-i686-arm-none-eabi\\arm-none-eabi\\include",
+                "C:\\Program Files (x86)\\Arm\\GNU Toolchain mingw-w64-i686-arm-none-eabi\\lib\\gcc\\arm-none-eabi\\15.2.1\\include",
+                "C:\\Program Files (x86)\\Arm\\GNU Toolchain mingw-w64-i686-arm-none-eabi\\lib\\gcc\\arm-none-eabi\\15.2.1\\include-fixed"
+            ],
+            "defines": [
+                "STM32F10X_MD",
+                "USE_STDPERIPH_DRIVER",
+                "RUN_ON_RENODE"
+            ],
+            "macFrameworkPath": [],
+            "compilerPath": "C:\\Program Files (x86)\\Arm\\GNU Toolchain mingw-w64-i686-arm-none-eabi\\bin\\arm-none-eabi-gcc.exe",
+            "cStandard": "c99",
+            "intelliSenseMode": "macos-gcc-arm"
+        }
+    ],
+    "version": 4
+}
