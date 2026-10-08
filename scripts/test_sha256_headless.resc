@@ -1,0 +1,7 @@
+:name: STM32F103 Crypto SHA256 Test Headless
+
+mach create "stm32"
+machine LoadPlatformDescription @debug/stm32f103_full.repl
+sysbus.usart1 CreateFileBackend @build/uart_sha256.log true
+sysbus LoadELF @build/app/sha256_test_ecu.elf
+start

@@ -1,0 +1,26 @@
+:name: STM32F103 Crypto SHA256 Test
+:description: Chạy test các layer AUTOSAR Crypto Stack (SHA-256)
+
+# 1. Tạo máy ảo
+mach create "stm32"
+
+# 2. Nạp cấu hình phần cứng
+machine LoadPlatformDescription @debug/stm32f103_full.repl
+
+# 3. Log UART ra màn hình console và ra file
+# showAnalyzer sysbus.usart1
+sysbus.usart1 CreateFileBackend $ORIGIN/../build/uart_sha256.log true
+
+# 4. Nạp file thực thi ELF vừa được build
+sysbus LoadELF $ORIGIN/../build/app/sha256_test_ecu.elf
+
+# 5. Khởi động GDB Server ở cổng 3333 để ta có thể debug (set watchpoint/breakpoint)
+machine StartGdbServer 3333
+mach set "stm32"
+
+logLevel 3 sysbus
+echo "======================================================="
+echo "Đã nạp sha256_test_ecu.elf"
+echo "Renode đang chờ kết nối GDB tại port 3333."
+echo "Mở một terminal mới, chạy: arm-none-eabi-gdb build/app/sha256_test_ecu.elf"
+echo "======================================================="
