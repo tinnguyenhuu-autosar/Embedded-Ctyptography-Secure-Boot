@@ -3,9 +3,6 @@
  * @brief   Crypto Interface Layer Implementation
  * @details Route jobs từ CSM đến đúng Crypto Driver
  *
- * @author  HALA Academy
- * @version 1.0.0
- * @date    2026-01-02
  ******************************************************************************/
 
 /*===========================================================================*/
@@ -40,7 +37,8 @@ static bool hashContextActive = false;
  *
  * @return  Kết quả xử lý
  */
-static Std_ReturnType CryIf_ProcessHashJob(Crypto_JobType *job) {
+static Std_ReturnType CryIf_ProcessHashJob(Crypto_JobType *job)
+{
   Std_ReturnType result = E_OK;
   Crypto_OperationModeType mode = job->jobData.mode;
 
@@ -54,9 +52,11 @@ static Std_ReturnType CryIf_ProcessHashJob(Crypto_JobType *job) {
    *-----------------------------------------------------------------------*/
 
   /* START mode - khởi tạo context */
-  if ((mode & CRYPTO_OPERATIONMODE_START) != 0u) {
+  if ((mode & CRYPTO_OPERATIONMODE_START) != 0u)
+  {
     result = Crypto_SHA256_Init(&hashContext);
-    if (result != E_OK) {
+    if (result != E_OK)
+    {
       hashContextActive = false;
       return result;
     }
@@ -64,24 +64,30 @@ static Std_ReturnType CryIf_ProcessHashJob(Crypto_JobType *job) {
   }
 
   /* UPDATE mode - thêm data */
-  if ((mode & CRYPTO_OPERATIONMODE_UPDATE) != 0u) {
-    if (!hashContextActive) {
+  if ((mode & CRYPTO_OPERATIONMODE_UPDATE) != 0u)
+  {
+    if (!hashContextActive)
+    {
       return E_NOT_OK; /* Chưa START */
     }
 
     if ((job->jobData.inputPtr != NULL_PTR) &&
-        (job->jobData.inputLength > 0u)) {
+        (job->jobData.inputLength > 0u))
+    {
       result = Crypto_SHA256_Update(&hashContext, job->jobData.inputPtr,
                                     job->jobData.inputLength);
-      if (result != E_OK) {
+      if (result != E_OK)
+      {
         return result;
       }
     }
   }
 
   /* FINISH mode - xuất digest */
-  if ((mode & CRYPTO_OPERATIONMODE_FINISH) != 0u) {
-    if (!hashContextActive) {
+  if ((mode & CRYPTO_OPERATIONMODE_FINISH) != 0u)
+  {
+    if (!hashContextActive)
+    {
       return E_NOT_OK; /* Chưa START */
     }
 
@@ -108,13 +114,15 @@ static Std_ReturnType CryIf_ProcessHashJob(Crypto_JobType *job) {
  *          1. Hash input data bằng SHA-256
  *          2. Sign hash bằng ECDSA với private key
  */
-static Std_ReturnType CryIf_ProcessSignatureGenerateJob(Crypto_JobType *job) {
+static Std_ReturnType CryIf_ProcessSignatureGenerateJob(Crypto_JobType *job)
+{
   uint8 digest[CRYPTO_SHA256_DIGEST_SIZE];
   uint32 digestLen = sizeof(digest);
   Std_ReturnType result;
 
   /* Chỉ hỗ trợ SINGLECALL cho demo */
-  if (job->jobData.mode != CRYPTO_OPERATIONMODE_SINGLECALL) {
+  if (job->jobData.mode != CRYPTO_OPERATIONMODE_SINGLECALL)
+  {
     /* TODO: Implement streaming mode cho signing */
     return E_NOT_OK;
   }
@@ -128,7 +136,8 @@ static Std_ReturnType CryIf_ProcessSignatureGenerateJob(Crypto_JobType *job) {
   result = Crypto_SHA256_Calculate(
       job->jobData.inputPtr, job->jobData.inputLength, digest, &digestLen);
 
-  if (result != E_OK) {
+  if (result != E_OK)
+  {
     return result;
   }
 
@@ -158,13 +167,15 @@ static Std_ReturnType CryIf_ProcessSignatureGenerateJob(Crypto_JobType *job) {
  *          1. Hash input data bằng SHA-256 (giống như khi sign)
  *          2. Verify signature bằng ECDSA với public key
  */
-static Std_ReturnType CryIf_ProcessSignatureVerifyJob(Crypto_JobType *job) {
+static Std_ReturnType CryIf_ProcessSignatureVerifyJob(Crypto_JobType *job)
+{
   uint8 digest[CRYPTO_SHA256_DIGEST_SIZE];
   uint32 digestLen = sizeof(digest);
   Std_ReturnType result;
 
   /* Chỉ hỗ trợ SINGLECALL cho demo */
-  if (job->jobData.mode != CRYPTO_OPERATIONMODE_SINGLECALL) {
+  if (job->jobData.mode != CRYPTO_OPERATIONMODE_SINGLECALL)
+  {
     return E_NOT_OK;
   }
 
@@ -177,7 +188,8 @@ static Std_ReturnType CryIf_ProcessSignatureVerifyJob(Crypto_JobType *job) {
   result = Crypto_SHA256_Calculate(
       job->jobData.inputPtr, job->jobData.inputLength, digest, &digestLen);
 
-  if (result != E_OK) {
+  if (result != E_OK)
+  {
     return result;
   }
 
@@ -197,7 +209,8 @@ static Std_ReturnType CryIf_ProcessSignatureVerifyJob(Crypto_JobType *job) {
 /*===========================================================================*/
 /*              HÀM PUBLIC: CRYIF_INIT                                        */
 /*===========================================================================*/
-Std_ReturnType CryIf_Init(void) {
+Std_ReturnType CryIf_Init(void)
+{
   /* Reset internal state */
   hashContextActive = false;
   memset(&hashContext, 0, sizeof(hashContext));
@@ -208,14 +221,16 @@ Std_ReturnType CryIf_Init(void) {
 /*===========================================================================*/
 /*              HÀM PUBLIC: CRYIF_PROCESSJOB                                  */
 /*===========================================================================*/
-Std_ReturnType CryIf_ProcessJob(uint32 channelId, Crypto_JobType *job) {
+Std_ReturnType CryIf_ProcessJob(uint32 channelId, Crypto_JobType *job)
+{
   Std_ReturnType result = E_NOT_OK;
 
   /* Suppress unused parameter warning */
   (void)channelId;
 
   /* Kiểm tra tham số */
-  if ((job == NULL_PTR) || (job->jobConfig == NULL_PTR)) {
+  if ((job == NULL_PTR) || (job->jobConfig == NULL_PTR))
+  {
     return E_NOT_OK;
   }
 
@@ -224,7 +239,8 @@ Std_ReturnType CryIf_ProcessJob(uint32 channelId, Crypto_JobType *job) {
    *
    * Dựa trên service type trong job config, gọi đúng driver function.
    *-----------------------------------------------------------------------*/
-  switch (job->jobConfig->service) {
+  switch (job->jobConfig->service)
+  {
   case CRYPTO_SERVICE_HASH:
     result = CryIf_ProcessHashJob(job);
     break;

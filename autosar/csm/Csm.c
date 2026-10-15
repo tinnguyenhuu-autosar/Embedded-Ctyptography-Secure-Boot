@@ -3,9 +3,6 @@
  * @brief   Crypto Service Manager Implementation
  * @details Triển khai CSM - API layer cho Application
  *
- * @author  HALA Academy
- * @version 1.0.0
- * @date    2026-01-02
  ******************************************************************************/
 
 /*===========================================================================*/
@@ -38,11 +35,14 @@
  *
  * @return  Con trỏ đến job config, hoặc NULL nếu không tìm thấy
  */
-static const Crypto_JobConfigType *Csm_GetJobConfig(uint32 jobId) {
+static const Crypto_JobConfigType *Csm_GetJobConfig(uint32 jobId)
+{
   uint32 i;
 
-  for (i = 0u; i < NUM_JOB_CONFIGS; i++) {
-    if (Csm_JobConfigs[i].jobId == jobId) {
+  for (i = 0u; i < NUM_JOB_CONFIGS; i++)
+  {
+    if (Csm_JobConfigs[i].jobId == jobId)
+    {
       return &Csm_JobConfigs[i];
     }
   }
@@ -53,7 +53,8 @@ static const Crypto_JobConfigType *Csm_GetJobConfig(uint32 jobId) {
 /*===========================================================================*/
 /*              HÀM PUBLIC: CSM_INIT                                          */
 /*===========================================================================*/
-Std_ReturnType Csm_Init(void) {
+Std_ReturnType Csm_Init(void)
+{
   /* Khởi tạo CryIf layer */
   return CryIf_Init();
 }
@@ -63,18 +64,21 @@ Std_ReturnType Csm_Init(void) {
 /*===========================================================================*/
 Std_ReturnType Csm_Hash(uint32 jobId, Crypto_OperationModeType mode,
                         const uint8 *dataPtr, uint32 dataLength,
-                        uint8 *resultPtr, uint32 *resultLengthPtr) {
+                        uint8 *resultPtr, uint32 *resultLengthPtr)
+{
   const Crypto_JobConfigType *config;
   Crypto_JobType job;
 
   /* Tìm job config */
   config = Csm_GetJobConfig(jobId);
-  if (config == NULL_PTR) {
+  if (config == NULL_PTR)
+  {
     return E_NOT_OK;
   }
 
   /* Kiểm tra đây là hash job */
-  if (config->service != CRYPTO_SERVICE_HASH) {
+  if (config->service != CRYPTO_SERVICE_HASH)
+  {
     return E_NOT_OK;
   }
 
@@ -104,18 +108,21 @@ Std_ReturnType Csm_SignatureGenerate(uint32 jobId,
                                      Crypto_OperationModeType mode,
                                      const uint8 *dataPtr, uint32 dataLength,
                                      uint8 *resultPtr,
-                                     uint32 *resultLengthPtr) {
+                                     uint32 *resultLengthPtr)
+{
   const Crypto_JobConfigType *config;
   Crypto_JobType job;
 
   /* Tìm job config */
   config = Csm_GetJobConfig(jobId);
-  if (config == NULL_PTR) {
+  if (config == NULL_PTR)
+  {
     return E_NOT_OK;
   }
 
   /* Kiểm tra đây là signature generate job */
-  if (config->service != CRYPTO_SERVICE_SIGNATURE_GEN) {
+  if (config->service != CRYPTO_SERVICE_SIGNATURE_GEN)
+  {
     return E_NOT_OK;
   }
 
@@ -145,18 +152,21 @@ Std_ReturnType Csm_SignatureVerify(uint32 jobId, Crypto_OperationModeType mode,
                                    const uint8 *dataPtr, uint32 dataLength,
                                    const uint8 *signaturePtr,
                                    uint32 signatureLength,
-                                   Crypto_VerifyResultType *verifyPtr) {
+                                   Crypto_VerifyResultType *verifyPtr)
+{
   const Crypto_JobConfigType *config;
   Crypto_JobType job;
 
   /* Tìm job config */
   config = Csm_GetJobConfig(jobId);
-  if (config == NULL_PTR) {
+  if (config == NULL_PTR)
+  {
     return E_NOT_OK;
   }
 
   /* Kiểm tra đây là signature verify job */
-  if (config->service != CRYPTO_SERVICE_SIGNATURE_VER) {
+  if (config->service != CRYPTO_SERVICE_SIGNATURE_VER)
+  {
     return E_NOT_OK;
   }
 
@@ -185,7 +195,8 @@ Std_ReturnType Csm_SignatureVerify(uint32 jobId, Crypto_OperationModeType mode,
 /*===========================================================================*/
 Std_ReturnType Csm_KeyElementSet_PrivateKey(uint32 keyId,
                                             const uint8 *privateKey,
-                                            uint32 keyLength) {
+                                            uint32 keyLength)
+{
   /*-----------------------------------------------------------------------
    * Simplified key management: trực tiếp gọi Crypto Driver
    *
@@ -202,6 +213,7 @@ Std_ReturnType Csm_KeyElementSet_PrivateKey(uint32 keyId,
 Std_ReturnType Csm_KeyElementSet_PublicKey(uint32 keyId,
                                            const uint8 *publicKeyX,
                                            const uint8 *publicKeyY,
-                                           uint32 keyLength) {
+                                           uint32 keyLength)
+{
   return Crypto_ECDSA_SetPublicKey(keyId, publicKeyX, publicKeyY, keyLength);
 }

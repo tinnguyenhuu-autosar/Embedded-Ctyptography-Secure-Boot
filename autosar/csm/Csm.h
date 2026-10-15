@@ -4,9 +4,6 @@
  * @details CSM cung cấp API crypto cho Application layer
  *          Đây là layer cao nhất trong Crypto Stack
  *
- * @author  HALA Academy
- * @version 1.0.0
- * @date    2026-01-02
  *
  * @note    TRONG AUTOSAR CLASSIC:
  *

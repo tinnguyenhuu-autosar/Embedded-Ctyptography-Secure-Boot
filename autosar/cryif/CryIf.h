@@ -3,9 +3,6 @@
  * @brief   Crypto Interface Layer
  * @details CryIf layer nằm giữa CSM và Crypto Driver, routing jobs đến driver
  *
- * @author  HALA Academy
- * @version 1.0.0
- * @date    2026-01-02
  *
  * @note    TRONG AUTOSAR CLASSIC:
  *
